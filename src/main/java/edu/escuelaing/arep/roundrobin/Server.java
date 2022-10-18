@@ -7,12 +7,17 @@ package edu.escuelaing.arep.roundrobin;
 
 import static spark.Spark.port;
 import static spark.Spark.staticFiles;
+
+import com.google.gson.Gson;
+
 import static spark.Spark.*;
 /**
  *
  * @author diego
  */
 public class Server {
+
+    static RoundRobin RR = new RoundRobin();
 
     public static void main(String[] args) {
         port(getPort());
@@ -29,6 +34,14 @@ public class Server {
         get("/", (req, res) -> {
             res.redirect("/index.html");
             return null;
+        });
+        //Path para insercion de cadena y envio a front para 
+        get("/insert/:cadenaValue", (req, res) -> {
+            res.status(200);
+            res.header("Access-Control-Allow-Origin", "*");
+            RR.changeServer();
+            System.out.println("ENTRA A GET DE SERVER EN RR");
+            return new Gson().toJson(RR.getChains(req.params(":cadenaValue")));
         });
     }
     /**
